@@ -1,5 +1,9 @@
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import { connectDB } from "./config/db.js";
+
+dotenv.config();
 
 const app = express();
 
@@ -9,12 +13,18 @@ app.use(express.json());
 
 // ruta de prueba
 app.get("/", (req, res) => {
-  res.send("API CineMatch funcionando 🚀");
+  res.send("API reelify funcionando correctamente");
 });
 
 // puerto
 const PORT = 3000;
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+const startServer = async () => {
+  await connectDB();
+
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  });
+};
+
+startServer();
