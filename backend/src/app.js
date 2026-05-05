@@ -2,10 +2,19 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
+import peliculaRoutes from "./routes/pelicula.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import usuarioRoutes from "./routes/usuario.routes.js";
+import statsRoutes from "./routes/stats.routes.js";
 
 dotenv.config();
 
 const app = express();
+
+app.use("/api/peliculas", peliculaRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/stats", statsRoutes);
 
 // middlewares
 app.use(cors());

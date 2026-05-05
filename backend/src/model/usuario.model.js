@@ -5,7 +5,7 @@ const usuarioSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     generos_favoritos: [{ type: String, required: true }],
-    createAt: { type: Date, default: Date.now },
-});
+}, { timestamps: true });
 
-export const Usuario = mongoose.model("Usuario", usuarioSchema);
+const Usuario = mongoose.model("Usuario", usuarioSchema);
+export default Usuario;

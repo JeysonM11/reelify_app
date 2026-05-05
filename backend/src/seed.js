@@ -45,7 +45,7 @@ const crearDatos = async () => {
         genero: [
           generos[Math.floor(Math.random() * generos.length)]
         ],
-        año: 2000 + Math.floor(Math.random() * 24)
+        year: 2000 + Math.floor(Math.random() * 24)
       });
     }
 

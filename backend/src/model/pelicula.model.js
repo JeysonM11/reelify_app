@@ -4,8 +4,8 @@ const peliculaSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     genero: [{ type: String, required: true }],
-    año: { type: Number, required: true },
-    createAt: { type: Date, default: Date.now },
-});
+    year: { type: Number, required: true },
+}, { timestamps: true });
 
-export const Pelicula = mongoose.model("Pelicula", peliculaSchema);
+const Pelicula = mongoose.model("Pelicula", peliculaSchema);
+export default Pelicula;
