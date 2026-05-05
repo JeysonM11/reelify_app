@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { connectDB } from "./config/db.js";
 
-import { Usuario } from "./model/usuario.model.js";
-import { Pelicula } from "./model/pelicula.model.js";
-import { Review } from "./model/review.model.js";
+import Usuario from "./model/usuario.model.js";
+import Pelicula from "./model/pelicula.model.js";
+import Review from "./model/review.model.js";
 
 dotenv.config();
 
