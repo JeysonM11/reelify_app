@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { appSeed } from "../data/mockData";
+import { getBackendHealth, getPeliculas, getReviews, getUsuarios } from "../services/api";
 import {
   buildMovieMetrics,
   getTopMovies,
@@ -14,11 +15,53 @@ import {
 
 const AppContext = createContext(null);
 
+const normalizeFallbackMovies = (movies) => movies.map((movie) => ({ ...movie }));
+const normalizeFallbackUsers = (users) => users.map((user) => ({ ...user }));
+const normalizeFallbackReviews = (reviews) => reviews.map((review) => ({ ...review }));
+
 export function AppProvider({ children }) {
-  const [users] = useState(appSeed.users || []);
-  const [rawMovies] = useState(appSeed.movies || []);
+  const [users, setUsers] = useState(appSeed.users || []);
+  const [rawMovies, setRawMovies] = useState(appSeed.movies || []);
   const [reviews, setReviews] = useState(appSeed.reviews || []);
   const [activeUserId, setActiveUserId] = useState(appSeed.activeUserId || (users[0] && users[0].id));
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const hydrateFromBackend = async () => {
+      const health = await getBackendHealth();
+      if (!health?.ok) return;
+
+      const [backendMovies, backendUsers, backendReviews] = await Promise.all([getPeliculas(), getUsuarios(), getReviews()]);
+
+      if (!isMounted) return;
+
+      if (backendMovies.length) {
+        const nextMovies = normalizeFallbackMovies(backendMovies);
+        setRawMovies(nextMovies);
+      }
+
+      if (backendUsers.length) {
+        const nextUsers = normalizeFallbackUsers(backendUsers);
+        // Keep the active viewer aligned to the backend if possible.
+        const existingActive = nextUsers.find((user) => user.id === activeUserId) || nextUsers[0] || null;
+        if (existingActive) {
+          setActiveUserId(existingActive.id);
+        }
+        setUsers(nextUsers);
+      }
+
+      if (backendReviews.length) {
+        setReviews(normalizeFallbackReviews(backendReviews));
+      }
+    };
+
+    hydrateFromBackend();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const movies = useMemo(() => buildMovieMetrics(rawMovies, reviews), [rawMovies, reviews]);
 

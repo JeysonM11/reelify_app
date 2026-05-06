@@ -11,18 +11,22 @@ dotenv.config();
 
 const app = express();
 
+// middlewares
+app.use(cors());
+app.use(express.json());
+
 app.use("/api/peliculas", peliculaRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/stats", statsRoutes);
 
-// middlewares
-app.use(cors());
-app.use(express.json());
-
 // ruta de prueba
 app.get("/", (req, res) => {
   res.send("API reelify funcionando correctamente");
+});
+
+app.get("/api/health", (req, res) => {
+  res.json({ ok: true, service: "reelify-api" });
 });
 
 // puerto
