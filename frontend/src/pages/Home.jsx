@@ -1,81 +1,75 @@
-import { useEffect, useState } from "react";
-import { getPeliculas } from "../services/api";
-import PeliculaCard from "../components/features/PeliculaCard";
-import Detalle from "./Detalle";
-import TopPeliculas from "../components/features/TopPeliculas";
-import Recomendaciones from "../components/features/Recomendaciones";
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { useApp } from "../contexts/AppContext";
+import HeroFeatureMovie from "../components/features/HeroFeatureMovie";
+import MovieCard from "../components/features/MovieCard";
+import GenreFilterChip from "../components/features/GenreFilterChip";
 
 export default function Home() {
-  const [peliculas, setPeliculas] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState(null);
+  const { featured, topMovies, recommendations, movies, genreAverages } = useApp();
+  const [activeGenre, setActiveGenre] = useState("All");
 
-  useEffect(() => {
-    const fetchPeliculas = async () => {
-      setLoading(true);
-      const data = await getPeliculas();
-      setPeliculas(data);
-      setLoading(false);
-    };
-    fetchPeliculas();
-  }, []);
+  const trendingGenres = useMemo(() => ["All", ...genreAverages.slice(0, 8).map((item) => item.genre)], [genreAverages]);
+  const trendingMovies = useMemo(() => {
+    if (activeGenre === "All") return topMovies.slice(0, 10);
+    return movies.filter((movie) => movie.genre.includes(activeGenre)).sort((left, right) => right.avgRating - left.avgRating || right.totalReviews - left.totalReviews).slice(0, 10);
+  }, [activeGenre, movies, topMovies]);
 
-  if (selected) {
-    return <Detalle pelicula={selected} />;
-  }
+  const rowTitle = activeGenre === "All" ? "Top rated" : `Trending in ${activeGenre}`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-950 to-black">
-      {/* Hero Section */}
-      <section className="px-8 py-20 max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <h1 className="text-6xl font-bold text-white mb-4 leading-tight">
-            Descubre el<br />
-            <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
-              Cine Perfecto
-            </span>
-          </h1>
-          <p className="text-gray-400 text-xl max-w-2xl mx-auto">
-            Recomendaciones inteligentes basadas en tus gustos y preferencias
-          </p>
+    <div className="space-y-14 px-4 py-6 text-stone-100 md:px-6 lg:px-10 lg:py-8">
+      <HeroFeatureMovie movie={featured} />
+
+      <section className="space-y-5">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Top rated</p>
+            <h2 className="mt-3 font-serif text-4xl text-stone-50">Highest rated films</h2>
+          </div>
+          <Link to="/top" className="text-sm text-amber-200 transition hover:text-amber-100">Open charts</Link>
+        </div>
+        <div className="flex gap-5 overflow-x-auto pb-2 [scrollbar-color:rgba(232,160,32,0.55)_rgba(255,255,255,0.06)]">
+          {topMovies.slice(0, 8).map((movie, index) => (
+            <div key={movie.id} className="w-48 shrink-0 md:w-52">
+              <MovieCard movie={movie} index={index} />
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Main Content */}
-      <div className="px-8 py-8 max-w-7xl mx-auto">
-        {/* Top Películas */}
-        <TopPeliculas />
-
-        {/* Recomendaciones */}
-        <Recomendaciones />
-
-        {/* All Movies */}
-        <div>
-          <div className="flex items-center gap-3 mb-8">
-            <span className="text-4xl">🎥</span>
-            <div>
-              <h2 className="text-white text-4xl font-bold">Catálogo Completo</h2>
-              <p className="text-gray-400 text-sm mt-1">Todas las películas disponibles</p>
-            </div>
+      <section className="space-y-5">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Trending by genre</p>
+            <h2 className="mt-3 font-serif text-4xl text-stone-50">{rowTitle}</h2>
           </div>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-gray-400">Cargando películas...</p>
-            </div>
-          ) : peliculas.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-400">No hay películas disponibles</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {peliculas.map((pelicula) => (
-                <PeliculaCard key={pelicula._id} pelicula={pelicula} onClick={() => setSelected(pelicula)} />
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {trendingGenres.map((genre) => (
+              <GenreFilterChip key={genre} active={activeGenre === genre} onClick={() => setActiveGenre(genre)}>
+                {genre}
+              </GenreFilterChip>
+            ))}
+          </div>
         </div>
-      </div>
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {trendingMovies.map((movie, index) => (
+            <MovieCard key={movie.id} movie={movie} index={index} />
+          ))}
+        </div>
+      </section>
+
+      <section className="space-y-5">
+        <div>
+          <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Recommended for you</p>
+          <h2 className="mt-3 font-serif text-4xl text-stone-50">Built from your highest-rated genres</h2>
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {recommendations.slice(0, 8).map((movie, index) => (
+            <MovieCard key={movie.id} movie={movie} index={index} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

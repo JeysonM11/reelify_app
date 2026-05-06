@@ -4,11 +4,16 @@ import { crearReview } from "../../services/api";
 import { useUser } from "../../contexts/UserContext";
 
 export default function PeliculaCard({ pelicula, onClick }) {
-  const { usuarioId } = useUser ? useUser() : { usuarioId: undefined };
+  const { usuarioId } = useUser();
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
 
   const handleRate = async (rating) => {
+    if (!usuarioId) {
+      setMensaje("Necesitas un usuario activo para calificar.");
+      setTimeout(() => setMensaje(""), 3000);
+      return;
+    }
     setLoading(true);
     const response = await crearReview({
       usuario: usuarioId,
@@ -46,7 +51,7 @@ export default function PeliculaCard({ pelicula, onClick }) {
           </div>
         </div>
         <div className="mt-4">
-          <Rating onRate={handleRate} />
+          <Rating onRate={handleRate} disabled={loading} />
           {mensaje && <div className="text-xs mt-2 text-purple-400">{mensaje}</div>}
         </div>
       </div>

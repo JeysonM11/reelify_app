@@ -1,9 +1,17 @@
 const API = "http://localhost:3000/api";
 
+const fetchJson = async (url, options) => {
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error(message || `HTTP ${res.status}`);
+  }
+  return res.json();
+};
+
 export const getPeliculas = async () => {
   try {
-    const res = await fetch(`${API}/peliculas`);
-    return await res.json();
+    return await fetchJson(`${API}/peliculas`);
   } catch (error) {
     console.error("Error fetching películas:", error);
     return [];
@@ -12,8 +20,7 @@ export const getPeliculas = async () => {
 
 export const getPeliculaById = async (id) => {
   try {
-    const res = await fetch(`${API}/peliculas/${id}`);
-    return await res.json();
+    return await fetchJson(`${API}/peliculas/${id}`);
   } catch (error) {
     console.error("Error fetching película:", error);
     return null;
@@ -22,8 +29,7 @@ export const getPeliculaById = async (id) => {
 
 export const getTopPeliculas = async () => {
   try {
-    const res = await fetch(`${API}/stats/top`);
-    return await res.json();
+    return await fetchJson(`${API}/stats/top`);
   } catch (error) {
     console.error("Error fetching top películas:", error);
     return [];
@@ -32,8 +38,7 @@ export const getTopPeliculas = async () => {
 
 export const getPromedioPorGenero = async () => {
   try {
-    const res = await fetch(`${API}/stats/generos`);
-    return await res.json();
+    return await fetchJson(`${API}/stats/generos`);
   } catch (error) {
     console.error("Error fetching promedio por género:", error);
     return [];
@@ -42,8 +47,7 @@ export const getPromedioPorGenero = async () => {
 
 export const getRecomendaciones = async (usuarioId) => {
   try {
-    const res = await fetch(`${API}/stats/recomendaciones/${usuarioId}`);
-    return await res.json();
+    return await fetchJson(`${API}/stats/recomendaciones/${usuarioId}`);
   } catch (error) {
     console.error("Error fetching recomendaciones:", error);
     return [];
@@ -52,8 +56,7 @@ export const getRecomendaciones = async (usuarioId) => {
 
 export const getUsuarios = async () => {
   try {
-    const res = await fetch(`${API}/usuarios`);
-    return await res.json();
+    return await fetchJson(`${API}/usuarios`);
   } catch (error) {
     console.error("Error fetching usuarios:", error);
     return [];
@@ -62,12 +65,11 @@ export const getUsuarios = async () => {
 
 export const crearUsuario = async (usuario) => {
   try {
-    const res = await fetch(`${API}/usuarios`, {
+    return await fetchJson(`${API}/usuarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(usuario),
     });
-    return await res.json();
   } catch (error) {
     console.error("Error creating usuario:", error);
     return null;
@@ -76,12 +78,11 @@ export const crearUsuario = async (usuario) => {
 
 export const crearReview = async (review) => {
   try {
-    const res = await fetch(`${API}/reviews`, {
+    return await fetchJson(`${API}/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(review),
     });
-    return await res.json();
   } catch (error) {
     console.error("Error creating review:", error);
     return null;
@@ -90,8 +91,7 @@ export const crearReview = async (review) => {
 
 export const getReviewsByPelicula = async (peliculaId) => {
   try {
-    const res = await fetch(`${API}/reviews/pelicula/${peliculaId}`);
-    return await res.json();
+    return await fetchJson(`${API}/reviews/pelicula/${peliculaId}`);
   } catch (error) {
     console.error("Error fetching reviews:", error);
     return [];
