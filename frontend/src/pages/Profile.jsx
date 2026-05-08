@@ -38,18 +38,18 @@ export default function Profile() {
             <div className="space-y-1">
               <div className="flex items-center justify-center md:justify-start gap-2 text-brand-violet font-bold tracking-widest uppercase text-[10px]">
                 <User size={12} />
-                User Account
+                Cuenta de Usuario
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">{activeUser?.name || "Guest"}</h1>
+              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">{activeUser?.name || "Invitado"}</h1>
               <div className="flex items-center justify-center md:justify-start gap-4 text-white/40 text-sm">
                 <span className="flex items-center gap-1.5">
                   <Calendar size={14} />
-                  Joined {activeUser ? new Date(activeUser.joinedAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' }) : "—"}
+                  Miembro desde {activeUser ? new Date(activeUser.joinedAt).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : "—"}
                 </span>
                 <span className="w-1 h-1 bg-white/20 rounded-full" />
                 <span className="flex items-center gap-1.5 text-brand-cyan">
                   <Star size={14} className="fill-brand-cyan/20" />
-                  Premium Member
+                  Miembro Premium
                 </span>
               </div>
             </div>
@@ -57,11 +57,11 @@ export default function Profile() {
             <div className="flex flex-wrap justify-center md:justify-start gap-3">
               <button className="px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-semibold hover:bg-white/10 transition-all flex items-center gap-2">
                 <Settings size={16} />
-                Edit Profile
+                Editar Perfil
               </button>
               <button className="px-6 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-all flex items-center gap-2">
                 <LogOut size={16} />
-                Sign Out
+                Cerrar Sesión
               </button>
             </div>
           </div>
@@ -70,10 +70,10 @@ export default function Profile() {
         {/* Quick Stats Bento */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
           {[
-            { label: "Movies Rated", value: userStats.moviesRated, icon: Film, color: "text-brand-violet" },
-            { label: "Avg Rating", value: userStats.averageRatingGiven.toFixed(1), icon: Star, color: "text-amber-400" },
-            { label: "Fav Genre", value: favoriteGenre, icon: Heart, color: "text-pink-500" },
-            { label: "Reviews", value: myReviews.length, icon: Calendar, color: "text-brand-cyan" }
+            { label: "Vistas", value: userStats.moviesRated, icon: Film, color: "text-brand-violet" },
+            { label: "Promedio", value: userStats.averageRatingGiven.toFixed(1), icon: Star, color: "text-amber-400" },
+            { label: "Fav Género", value: favoriteGenre, icon: Heart, color: "text-pink-500" },
+            { label: "Reseñas", value: myReviews.length, icon: Calendar, color: "text-brand-cyan" }
           ].map((stat, i) => (
             <div key={i} className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.06] transition-colors">
               <stat.icon size={20} className={`${stat.color} mb-3`} />
@@ -88,9 +88,9 @@ export default function Profile() {
       <div className="grid lg:grid-cols-5 gap-12">
         <section className="lg:col-span-3 space-y-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-white tracking-tight">Your Reviews</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Tus Reseñas</h2>
             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-bold text-white/40 uppercase">
-              {myReviews.length} total
+              {myReviews.length} en total
             </span>
           </div>
           
@@ -103,8 +103,8 @@ export default function Profile() {
             ) : (
               <div className="p-12 rounded-[2rem] border border-dashed border-white/10 flex flex-col items-center justify-center text-center">
                 <Film className="text-white/10 mb-4" size={48} />
-                <p className="text-white/40 font-medium">You haven't reviewed any movies yet.</p>
-                <Link to="/" className="mt-4 text-brand-violet font-bold text-sm hover:underline">Start exploring</Link>
+                <p className="text-white/40 font-medium">Aún no has reseñado ninguna película.</p>
+                <Link to="/" className="mt-4 text-brand-violet font-bold text-sm hover:underline">Empieza a explorar</Link>
               </div>
             )}
           </div>
@@ -112,8 +112,8 @@ export default function Profile() {
 
         <section className="lg:col-span-2 space-y-8">
            <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-white tracking-tight">Watch Again</h2>
-            <Link to="/recomendaciones" className="text-xs font-bold text-brand-cyan uppercase tracking-wider hover:underline">View All</Link>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Ver de nuevo</h2>
+            <Link to="/recomendaciones" className="text-xs font-bold text-brand-cyan uppercase tracking-wider hover:underline">Ver todo</Link>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -122,7 +122,7 @@ export default function Profile() {
                 <MovieCard key={movie.id} movie={movie} index={index} compact />
               ))
             ) : (
-              <p className="col-span-2 text-white/20 text-center py-12">No recommendations available.</p>
+              <p className="col-span-2 text-white/20 text-center py-12">No hay recomendaciones disponibles.</p>
             )}
           </div>
         </section>

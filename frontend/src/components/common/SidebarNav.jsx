@@ -4,10 +4,10 @@ import { Home, TrendingUp, Sparkles, User, LogOut, ChevronRight } from "lucide-r
 import { motion } from "framer-motion";
 
 const navItems = [
-  { to: "/", label: "Discovery", icon: Home },
-  { to: "/top", label: "Top Charts", icon: TrendingUp },
-  { to: "/recomendaciones", label: "For You", icon: Sparkles },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/", label: "Descubrir", icon: Home },
+  { to: "/top", label: "Tendencias", icon: TrendingUp },
+  { to: "/recomendaciones", label: "Para Ti", icon: Sparkles },
+  { to: "/profile", label: "Perfil", icon: User },
 ];
 
 export default function SidebarNav() {
@@ -22,7 +22,6 @@ export default function SidebarNav() {
         </div>
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-white leading-none">Reelify</h1>
-          <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 font-medium">Cinematic Universe</span>
         </div>
       </div>
 
@@ -33,17 +32,16 @@ export default function SidebarNav() {
             to={to}
             end={to === "/"}
             className={({ isActive }) =>
-              `group relative flex items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-300 ${
-                isActive 
-                  ? "bg-white/5 text-white" 
-                  : "text-white/40 hover:text-white/80 hover:bg-white/[0.02]"
+              `group relative flex items-center gap-4 rounded-xl px-4 py-3.5 text-sm font-medium transition-all duration-300 ${isActive
+                ? "bg-white/5 text-white"
+                : "text-white/40 hover:text-white/80 hover:bg-white/[0.02]"
               }`
             }
           >
             {({ isActive }) => (
               <>
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     layoutId="activeNav"
                     className="absolute left-0 w-1 h-6 bg-brand-violet rounded-r-full"
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -66,8 +64,8 @@ export default function SidebarNav() {
               <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-black rounded-full" />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{activeUser?.name || "Guest"}</p>
-              <p className="text-[10px] text-white/40 uppercase tracking-wider">Premium Member</p>
+              <p className="text-sm font-semibold text-white truncate">{activeUser?.name || "Invitado"}</p>
+              <p className="text-[10px] text-white/40 uppercase tracking-wider">Miembro Premium</p>
             </div>
           </div>
 
@@ -76,13 +74,12 @@ export default function SidebarNav() {
               <button
                 key={user.id}
                 type="button"
-                className={`h-8 w-8 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                  activeUserId === user.id 
-                    ? "border-brand-violet scale-110 shadow-[0_0_15px_rgba(139,92,246,0.3)]" 
+                className={`h-8 w-8 rounded-lg overflow-hidden border-2 transition-all duration-300 ${activeUserId === user.id
+                    ? "border-brand-violet scale-110 shadow-[0_0_15px_rgba(139,92,246,0.3)]"
                     : "border-transparent opacity-40 hover:opacity-100 hover:scale-105"
-                }`}
+                  }`}
                 onClick={() => setActiveUserId(user.id)}
-                title={`Switch to ${user.name}`}
+                title={`Cambiar a ${user.name}`}
               >
                 <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
               </button>
@@ -92,7 +89,7 @@ export default function SidebarNav() {
 
         <button className="flex w-full items-center gap-4 px-4 py-3 text-sm font-medium text-white/40 hover:text-white hover:bg-red-500/10 rounded-xl transition-all duration-300 group">
           <LogOut size={20} className="group-hover:text-red-400" />
-          <span>Sign Out</span>
+          <span>Cerrar Sesión</span>
         </button>
       </div>
     </aside>

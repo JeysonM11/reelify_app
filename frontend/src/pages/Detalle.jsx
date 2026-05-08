@@ -20,9 +20,9 @@ export default function Detalle() {
   if (!movie) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-        <p className="text-white/40 text-xl font-medium">Movie not found.</p>
+        <p className="text-white/40 text-xl font-medium">Película no encontrada.</p>
         <Link to="/" className="px-8 py-3 rounded-2xl bg-brand-violet text-white font-bold transition-all hover:scale-105">
-          Return to Discovery
+          Volver a Inicio
         </Link>
       </div>
     );
@@ -48,7 +48,7 @@ export default function Detalle() {
         
         <Link to="/" className="absolute top-8 left-8 z-10 flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-white/10 text-white font-bold backdrop-blur-md hover:bg-white/10 transition-all">
           <ArrowLeft size={18} />
-          Back
+          Volver
         </Link>
 
         <div className="relative h-full grid lg:grid-cols-[400px_1fr] items-end p-8 md:p-16 gap-12">
@@ -77,7 +77,7 @@ export default function Detalle() {
               <div className="flex items-center gap-2">
                 <Star size={18} className="text-amber-400 fill-amber-400" />
                 <span className="text-white font-bold">{average.toFixed(1)}</span>
-                <span className="text-xs">({movieReviews.length} Reviews)</span>
+                <span className="text-xs">({movieReviews.length} Reseñas)</span>
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={18} />
@@ -96,7 +96,7 @@ export default function Detalle() {
             <div className="flex flex-wrap gap-4 pt-4">
               <button className="flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-black font-black hover:bg-brand-cyan hover:text-white transition-all">
                 <Play fill="currentColor" size={20} />
-                WATCH TRAILER
+                VER TRAILER
               </button>
               <button className="flex items-center gap-3 px-6 py-5 rounded-2xl bg-white/10 text-white border border-white/10 backdrop-blur-md hover:bg-white/20 transition-all">
                 <Plus size={20} />
@@ -110,21 +110,21 @@ export default function Detalle() {
       <div className="grid lg:grid-cols-5 gap-16">
         <section className="lg:col-span-2 space-y-8">
            <div className="space-y-2">
-             <div className="text-brand-violet font-bold tracking-widest uppercase text-[10px]">Interaction</div>
-             <h2 className="text-3xl font-bold text-white tracking-tight">Share Your Review</h2>
+             <div className="text-brand-violet font-bold tracking-widest uppercase text-[10px]">Interacción</div>
+             <h2 className="text-3xl font-bold text-white tracking-tight">Escribe tu Reseña</h2>
            </div>
 
            <form onSubmit={handleSubmit} className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-3xl space-y-8">
              <div className="flex items-center gap-4">
                <img src={selectedUser?.avatar} className="w-12 h-12 rounded-xl object-cover border border-white/10" alt="" />
                <div>
-                 <p className="text-white font-bold">{selectedUser?.name || "Guest"}</p>
-                 <p className="text-[10px] text-white/30 uppercase tracking-widest">Active Profile</p>
+                 <p className="text-white font-bold">{selectedUser?.name || "Invitado"}</p>
+                 <p className="text-[10px] text-white/30 uppercase tracking-widest">Perfil Activo</p>
                </div>
              </div>
 
              <div className="space-y-4">
-               <p className="text-sm font-bold text-white/60">How would you rate it?</p>
+               <p className="text-sm font-bold text-white/60">¿Cómo la calificarías?</p>
                <div className="flex gap-2">
                  {[1, 2, 3, 4, 5].map((s) => (
                    <button
@@ -147,22 +147,22 @@ export default function Detalle() {
                <textarea
                  value={comment}
                  onChange={(e) => setComment(e.target.value)}
-                 placeholder="What did you think of this film?"
+                 placeholder="¿Qué te pareció esta película?"
                  className="w-full min-h-[160px] p-6 rounded-2xl bg-black/40 border border-white/5 text-white placeholder:text-white/20 focus:border-brand-violet transition-colors resize-none"
                />
              </div>
 
              <button type="submit" className="w-full py-5 rounded-2xl bg-brand-violet text-white font-black hover:bg-brand-violet/80 transition-all flex items-center justify-center gap-2">
                <Send size={18} />
-               POST REVIEW
+               PUBLICAR RESEÑA
              </button>
            </form>
         </section>
 
         <section className="lg:col-span-3 space-y-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-bold text-white tracking-tight">Audience Reactions</h2>
-            <span className="text-white/40 text-sm font-bold uppercase tracking-widest">{movieReviews.length} total</span>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Reacciones del Público</h2>
+            <span className="text-white/40 text-sm font-bold uppercase tracking-widest">{movieReviews.length} en total</span>
           </div>
 
           <div className="grid gap-6">
@@ -177,7 +177,7 @@ export default function Detalle() {
                ))
             ) : (
               <div className="py-20 text-center border border-dashed border-white/10 rounded-[2.5rem]">
-                <p className="text-white/20 font-bold uppercase tracking-widest">No reviews yet</p>
+                <p className="text-white/20 font-bold uppercase tracking-widest">Sin reseñas aún</p>
               </div>
             )}
           </div>
@@ -186,7 +186,7 @@ export default function Detalle() {
 
       {/* Similar Movies */}
       <section className="space-y-8 pb-12">
-        <h2 className="text-3xl font-bold text-white tracking-tight">Similar Experiences</h2>
+        <h2 className="text-3xl font-bold text-white tracking-tight">Experiencias Similares</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
           {similar.map((item, index) => (
             <MovieCard key={item.id} movie={item} index={index} compact />

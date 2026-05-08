@@ -13,21 +13,21 @@ export default function Top() {
           <div className="flex flex-col gap-4">
              <div className="flex items-center gap-2 text-brand-violet font-bold tracking-widest uppercase text-[10px]">
               <Award size={12} />
-              Global Rankings
+              Rankings Globales
             </div>
-            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Top 20 Cinema</h1>
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">Top 20 Cine</h1>
             <p className="max-w-2xl text-white/40 text-lg leading-relaxed">
-              Curated list of the highest-rated cinematic experiences based on community feedback and professional critiques.
+              Lista curada de las mejores experiencias cinematográficas basadas en el feedback de la comunidad y críticas profesionales.
             </p>
           </div>
 
           <div className="rounded-[2.5rem] border border-white/5 bg-black/20 backdrop-blur-xl overflow-hidden">
             <div className="hidden md:grid grid-cols-[80px_100px_1fr_120px_120px] gap-6 px-8 py-5 border-b border-white/5 text-[10px] uppercase tracking-[0.2em] font-bold text-white/40">
-              <span>Rank</span>
+              <span>Rango</span>
               <span>Visual</span>
-              <span>Details</span>
-              <span className="text-center">Rating</span>
-              <span className="text-right">Activity</span>
+              <span>Detalles</span>
+              <span className="text-center">Calificación</span>
+              <span className="text-right">Actividad</span>
             </div>
             
             <div className="divide-y divide-white/5">
@@ -76,13 +76,13 @@ export default function Top() {
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-brand-cyan/20 blur-[60px] rounded-full group-hover:bg-brand-cyan/40 transition-colors" />
             <div className="flex items-center gap-2 text-white font-bold tracking-widest uppercase text-[10px] mb-6">
               <TrendingUp size={14} />
-              Hot this Month
+              Popular este Mes
             </div>
-            <h2 className="text-3xl font-bold text-white tracking-tight mb-2 leading-none">{mostReviewedThisMonth?.movie?.title || "Quiet Month"}</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight mb-2 leading-none">{mostReviewedThisMonth?.movie?.title || "Mes Tranquilo"}</h2>
             <p className="text-white/60 text-sm leading-relaxed mb-6">
               {mostReviewedThisMonth 
-                ? `Generating massive buzz with ${mostReviewedThisMonth.reviewCount} new reviews in the last 30 days.` 
-                : "No standout movies have captured the spotlight this month."}
+                ? `Generando gran expectativa con ${mostReviewedThisMonth.reviewCount} nuevas reseñas en los últimos 30 días.` 
+                : "Ninguna película ha captado el protagonismo este mes."}
             </p>
             {mostReviewedThisMonth?.movie && (
                <img src={mostReviewedThisMonth.movie.poster} className="w-full h-48 object-cover rounded-2xl border border-white/10" alt="" />
@@ -91,7 +91,7 @@ export default function Top() {
           
           <div className="p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl">
              <div className="flex items-center gap-2 text-white/40 font-bold tracking-widest uppercase text-[10px] mb-8">
-              Genre Analysis
+              Análisis por Género
             </div>
             <RatingBarChart data={genreAverages} />
           </div>

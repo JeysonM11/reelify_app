@@ -15,7 +15,7 @@ export default function MovieCard({ movie, index = 0, compact = false }) {
       <Link
         to={`/movie/${movie.id}`}
         className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-white/5 bg-white/5 shadow-2xl transition-all duration-500 group-hover:border-white/20 group-hover:shadow-brand-violet/10 group-hover:scale-[1.02]"
-        aria-label={`View details for ${movie.title}`}
+        aria-label={`Ver detalles de ${movie.title}`}
       >
         <img 
           src={movie.poster} 
@@ -29,7 +29,7 @@ export default function MovieCard({ movie, index = 0, compact = false }) {
             <Play fill="white" size={24} className="ml-1" />
           </div>
           <div className="flex gap-2">
-            <button className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md border border-white/10 hover:bg-white/20 transition-colors">
+            <button title="Añadir a mi lista" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md border border-white/10 hover:bg-white/20 transition-colors">
               <Plus size={20} />
             </button>
           </div>

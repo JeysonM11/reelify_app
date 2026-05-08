@@ -3,10 +3,10 @@ import { Home, TrendingUp, Sparkles, User } from "lucide-react";
 import { motion } from "framer-motion";
 
 const navItems = [
-  { to: "/", label: "Discovery", icon: Home },
-  { to: "/top", label: "Charts", icon: TrendingUp },
-  { to: "/recomendaciones", label: "AI Picks", icon: Sparkles },
-  { to: "/profile", label: "Profile", icon: User },
+  { to: "/", label: "Descubrir", icon: Home },
+  { to: "/top", label: "Tendencias", icon: TrendingUp },
+  { to: "/recomendaciones", label: "Para Ti", icon: Sparkles },
+  { to: "/profile", label: "Perfil", icon: User },
 ];
 
 export default function MobileNav() {

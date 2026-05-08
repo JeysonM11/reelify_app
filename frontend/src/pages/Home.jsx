@@ -9,10 +9,10 @@ export default function Home() {
   const { featured, topMovies, recommendations, movies, genreAverages } = useApp();
   const [activeGenre, setActiveGenre] = useState("All");
 
-  const trendingGenres = useMemo(() => ["All", ...genreAverages.slice(0, 6).map((item) => item.genre)], [genreAverages]);
+  const trendingGenres = useMemo(() => ["Todos", ...genreAverages.slice(0, 6).map((item) => item.genre)], [genreAverages]);
   
   const filteredMovies = useMemo(() => {
-    if (activeGenre === "All") return topMovies.slice(0, 8);
+    if (activeGenre === "Todos") return topMovies.slice(0, 8);
     return movies
       .filter((movie) => movie.genre.includes(activeGenre))
       .sort((a, b) => b.avgRating - a.avgRating)
@@ -38,7 +38,7 @@ export default function Home() {
             className="flex items-center gap-2 text-brand-cyan font-bold tracking-[0.2em] uppercase text-xs"
           >
             <Sparkles size={14} />
-            Featured Presentation
+            Presentación Destacada
           </motion.div>
           
           <motion.h1 
@@ -56,7 +56,7 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="text-white/60 text-lg leading-relaxed line-clamp-2 md:line-clamp-3"
           >
-            {featured?.description || "Experience the cinematic masterpiece that has captivated audiences worldwide. A journey into the depths of storytelling and visual excellence."}
+            {featured?.description || "Vive la obra maestra cinematográfica que ha cautivado al público en todo el mundo. Un viaje a las profundidades de la narrativa y la excelencia visual."}
           </motion.p>
           
           <motion.div 
@@ -67,10 +67,10 @@ export default function Home() {
           >
             <Link to={`/movie/${featured?.id}`} className="flex items-center gap-2 bg-white text-black px-8 py-4 rounded-2xl font-bold hover:bg-brand-cyan hover:text-white transition-all duration-300">
               <Play fill="currentColor" size={18} />
-              Watch Now
+              Ver Ahora
             </Link>
             <button className="px-8 py-4 rounded-2xl font-bold bg-white/10 text-white backdrop-blur-md border border-white/10 hover:bg-white/20 transition-all">
-              Add to List
+              Mi Lista
             </button>
           </motion.div>
         </div>
@@ -82,9 +82,9 @@ export default function Home() {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-brand-violet font-bold tracking-widest uppercase text-[10px]">
               <TrendingUp size={12} />
-              Current Trends
+              Tendencias Actuales
             </div>
-            <h2 className="text-4xl font-bold text-white tracking-tight">Trending Content</h2>
+            <h2 className="text-4xl font-bold text-white tracking-tight">Contenido Popular</h2>
           </div>
           
           <div className="flex flex-wrap gap-2 p-1.5 bg-white/5 rounded-2xl border border-white/5 backdrop-blur-sm">
@@ -118,17 +118,17 @@ export default function Home() {
         <div className="md:col-span-2 relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand-violet/20 to-transparent border border-white/10 p-10 flex flex-col justify-center min-h-[300px]">
           <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-brand-violet/20 blur-[100px] rounded-full" />
           <Trophy className="text-brand-violet mb-6" size={48} />
-          <h3 className="text-3xl font-bold text-white mb-4">Oscars 2024 Collection</h3>
-          <p className="text-white/60 mb-8 max-w-md">Explore the award-winning films that defined the year in cinema. From breathtaking visuals to moving performances.</p>
+          <h3 className="text-3xl font-bold text-white mb-4">Colección Oscars 2024</h3>
+          <p className="text-white/60 mb-8 max-w-md">Explora las películas premiadas que definieron el año en el cine. Desde visuales impresionantes hasta actuaciones conmovedoras.</p>
           <Link to="/top" className="group flex items-center gap-2 text-white font-bold w-fit">
-            View Collection <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            Ver Colección <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
         
         <div className="relative overflow-hidden rounded-[2.5rem] bg-white/5 border border-white/5 p-10 flex flex-col justify-between">
           <div>
-            <h3 className="text-2xl font-bold text-white mb-2">Weekly Top</h3>
-            <p className="text-white/40 text-sm">Most watched this week</p>
+            <h3 className="text-2xl font-bold text-white mb-2">Top Semanal</h3>
+            <p className="text-white/40 text-sm">Lo más visto esta semana</p>
           </div>
           <div className="flex -space-x-4 mt-8">
             {topMovies.slice(0, 4).map((m, i) => (
@@ -147,11 +147,11 @@ export default function Home() {
           <div className="space-y-2">
              <div className="flex items-center gap-2 text-brand-cyan font-bold tracking-widest uppercase text-[10px]">
               <Sparkles size={12} />
-              AI Powered
+              IA Potenciada
             </div>
-            <h2 className="text-4xl font-bold text-white tracking-tight">Recommended for you</h2>
+            <h2 className="text-4xl font-bold text-white tracking-tight">Recomendado para ti</h2>
           </div>
-          <Link to="/recomendaciones" className="text-sm font-bold text-white/40 hover:text-brand-cyan transition-colors">See all</Link>
+          <Link to="/recomendaciones" className="text-sm font-bold text-white/40 hover:text-brand-cyan transition-colors">Ver todo</Link>
         </div>
         
         <div className="flex gap-6 overflow-x-auto pb-6 no-scrollbar snap-x">

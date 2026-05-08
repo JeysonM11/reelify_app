@@ -29,7 +29,7 @@ export default function ReviewCard({ review, user, movie }) {
           <div className="min-w-0">
             <h4 className="text-white font-bold truncate group-hover:text-brand-cyan transition-colors">{userData.name}</h4>
             <p className="text-[10px] text-white/40 uppercase tracking-wider font-medium">
-              {movieData?.title ? <span className="text-brand-violet">{movieData.title}</span> : "Review"} • {formatDate(review.createdAt)}
+              {movieData?.title ? <span className="text-brand-violet">{movieData.title}</span> : "Reseña"} • {formatDate(review.createdAt)}
             </p>
           </div>
           <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5 border border-white/5">

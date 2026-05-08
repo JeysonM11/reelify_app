@@ -22,15 +22,15 @@ export default function RecomendacionesPage() {
             className="flex items-center gap-3 px-6 py-2 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan text-xs font-bold uppercase tracking-widest"
           >
             <BrainCircuit size={16} />
-            AI Content Discovery
+            Descubrimiento con IA
           </motion.div>
           
           <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter leading-none">
-            Tailored to <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-violet to-brand-cyan">Your Taste</span>
+            Ajustado a <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-violet to-brand-cyan">Tu Gusto</span>
           </h1>
           
           <p className="text-white/40 text-lg md:text-xl leading-relaxed">
-            Our recommendation engine analyzes your {userStats.moviesRated} ratings and {focusGenres.length} favorite genres to find your next cinematic obsession.
+            Nuestro motor de recomendaciones analiza tus {userStats.moviesRated} calificaciones y {focusGenres.length} géneros favoritos para encontrar tu próxima obsesión cinematográfica.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2">
@@ -44,17 +44,17 @@ export default function RecomendacionesPage() {
           <div className="flex items-center gap-8 pt-6 border-t border-white/5 w-full justify-center">
             <div className="text-center">
               <p className="text-2xl font-black text-white">{userStats.moviesRated}</p>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Data Points</p>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Datos</p>
             </div>
             <div className="w-px h-10 bg-white/5" />
             <div className="text-center">
               <p className="text-2xl font-black text-white">{userStats.averageRatingGiven.toFixed(1)}</p>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Avg Quality</p>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Calidad Promedio</p>
             </div>
              <div className="w-px h-10 bg-white/5" />
             <div className="text-center">
               <p className="text-2xl font-black text-white">98%</p>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Match Accuracy</p>
+              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Precisión</p>
             </div>
           </div>
         </div>
@@ -67,12 +67,12 @@ export default function RecomendacionesPage() {
              <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-brand-cyan">
               <Zap size={20} />
             </div>
-            <h2 className="text-3xl font-bold text-white tracking-tight">Top Predictions</h2>
+            <h2 className="text-3xl font-bold text-white tracking-tight">Top Predicciones</h2>
           </div>
           
           <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-white/40 hover:text-white transition-colors">
             <Filter size={14} />
-            Refine Search
+            Refinar Búsqueda
           </button>
         </div>
 
@@ -84,7 +84,7 @@ export default function RecomendacionesPage() {
           ) : (
             <div className="col-span-full py-20 text-center space-y-4">
               <Sparkles className="mx-auto text-white/10" size={64} />
-              <p className="text-white/40 text-lg">Rate more movies to unlock personalized predictions.</p>
+              <p className="text-white/40 text-lg">Califica más películas para desbloquear predicciones personalizadas.</p>
             </div>
           )}
         </div>

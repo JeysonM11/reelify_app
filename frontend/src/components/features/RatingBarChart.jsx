@@ -9,7 +9,7 @@ export default function RatingBarChart({ data = [] }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3 text-brand-violet font-bold tracking-widest uppercase text-[10px]">
           <BarChart3 size={14} />
-          Metrics
+          Estadísticas
         </div>
       </div>
 
@@ -32,7 +32,7 @@ export default function RatingBarChart({ data = [] }) {
                 />
               </div>
               <div className="flex justify-between items-center">
-                 <span className="text-[10px] text-white/20 uppercase font-bold tracking-widest">{item.totalReviews} reviews</span>
+                 <span className="text-[10px] text-white/20 uppercase font-bold tracking-widest">{item.totalReviews} reseñas</span>
               </div>
             </div>
           );
