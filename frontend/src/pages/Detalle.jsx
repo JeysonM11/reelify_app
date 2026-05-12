@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useApp } from "../contexts/AppContext";
-import StarRating from "../components/features/StarRating";
 import ReviewCard from "../components/features/ReviewCard";
 import MovieCard from "../components/features/MovieCard";
+import { motion } from "framer-motion";
+import { Star, Play, Plus, Clock, Globe, ArrowLeft, Send } from "lucide-react";
 
 export default function Detalle() {
   const { movieId } = useParams();
@@ -18,10 +19,10 @@ export default function Detalle() {
 
   if (!movie) {
     return (
-      <div className="px-6 py-10 text-stone-100">
-        <p className="text-stone-400">Movie not found.</p>
-        <Link to="/" className="mt-4 inline-flex rounded-full bg-amber-400 px-5 py-3 font-semibold text-stone-950">
-          Back home
+      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
+        <p className="text-white/40 text-xl font-medium">Película no encontrada.</p>
+        <Link to="/" className="px-8 py-3 rounded-2xl bg-brand-violet text-white font-bold transition-all hover:scale-105">
+          Volver a Inicio
         </Link>
       </div>
     );
@@ -30,7 +31,6 @@ export default function Detalle() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (!comment.trim()) return;
-
     addReview({ userId: activeUserId, movieId: movie.id, rating, comment });
     setComment("");
     setRating(5);
@@ -39,86 +39,157 @@ export default function Detalle() {
   const similar = similarMovies(movie.id, 6);
 
   return (
-    <div className="space-y-10 px-4 py-6 text-stone-100 md:px-6 lg:px-10 lg:py-8">
-      <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-white/5 shadow-[0_40px_100px_rgba(0,0,0,0.55)]">
-        <img src={movie.poster} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25 blur-[2px]" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(14,14,14,0.96)_0%,rgba(14,14,14,0.8)_45%,rgba(14,14,14,0.28)_100%)]" />
-        <div className="relative grid gap-8 px-6 py-8 lg:grid-cols-[0.8fr_1.2fr] lg:p-10">
-          <div className="mx-auto w-full max-w-sm lg:mx-0">
-            <img src={movie.poster} alt={movie.title} className="aspect-[2/3] w-full rounded-[2rem] border border-white/10 object-cover shadow-2xl shadow-black/40" />
-          </div>
-          <div className="flex flex-col justify-end">
-            <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Movie detail</p>
-            <h1 className="mt-4 font-serif text-5xl text-stone-50 md:text-7xl">{movie.title}</h1>
-            <div className="mt-5 flex flex-wrap gap-3 text-sm text-stone-300">
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">{movie.year}</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2">{movie.director}</span>
+    <div className="space-y-16 animate-in fade-in duration-700">
+      {/* Cinematic Banner */}
+      <section className="relative h-[70vh] min-h-[500px] w-full overflow-hidden rounded-[3rem] border border-white/10">
+        <img src={movie.poster} alt="" className="absolute inset-0 h-full w-full object-cover opacity-30 blur-[4px] scale-110" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+        
+        <Link to="/" className="absolute top-8 left-8 z-10 flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-white/10 text-white font-bold backdrop-blur-md hover:bg-white/10 transition-all">
+          <ArrowLeft size={18} />
+          Volver
+        </Link>
+
+        <div className="relative h-full grid lg:grid-cols-[400px_1fr] items-end p-8 md:p-16 gap-12">
+          <motion.div 
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="hidden lg:block aspect-[2/3] w-full rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl"
+          >
+            <img src={movie.poster} alt={movie.title} className="h-full w-full object-cover" />
+          </motion.div>
+
+          <div className="space-y-6 max-w-4xl">
+            <div className="flex flex-wrap gap-3">
               {movie.genre.map((genre) => (
-                <span key={genre} className="rounded-full border border-white/10 bg-white/5 px-4 py-2">{genre}</span>
+                <span key={genre} className="px-4 py-1.5 rounded-full bg-brand-violet/20 border border-brand-violet/20 text-brand-violet text-[10px] font-black uppercase tracking-widest">
+                  {genre}
+                </span>
               ))}
             </div>
-            <p className="mt-6 max-w-3xl text-base leading-7 text-stone-300 md:text-lg">{movie.synopsis}</p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <StarRating value={average} label={`${movie.title} has ${average.toFixed(1)} stars`} readOnly />
-              <span className="text-sm text-stone-400">{movieReviews.length} reviews</span>
+            
+            <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-none">
+              {movie.title}
+            </h1>
+
+            <div className="flex flex-wrap items-center gap-6 text-white/60 font-medium">
+              <div className="flex items-center gap-2">
+                <Star size={18} className="text-amber-400 fill-amber-400" />
+                <span className="text-white font-bold">{average.toFixed(1)}</span>
+                <span className="text-xs">({movieReviews.length} Reseñas)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock size={18} />
+                <span>{movie.year}</span>
+              </div>
+               <div className="flex items-center gap-2">
+                <Globe size={18} />
+                <span>{movie.director}</span>
+              </div>
+            </div>
+
+            <p className="text-lg text-white/70 leading-relaxed max-w-2xl">
+              {movie.synopsis}
+            </p>
+
+            <div className="flex flex-wrap gap-4 pt-4">
+              <button className="flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-black font-black hover:bg-brand-cyan hover:text-white transition-all">
+                <Play fill="currentColor" size={20} />
+                VER TRAILER
+              </button>
+              <button className="flex items-center gap-3 px-6 py-5 rounded-2xl bg-white/10 text-white border border-white/10 backdrop-blur-md hover:bg-white/20 transition-all">
+                <Plus size={20} />
+              </button>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-        <form onSubmit={handleSubmit} className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-          <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Leave a review</p>
-          <h2 className="mt-3 font-serif text-3xl text-stone-50">Rate it from your current profile</h2>
-          <div className="mt-5 flex items-center gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
-            <img src={selectedUser?.avatar} alt="" className="h-14 w-14 rounded-2xl border border-white/10 object-cover" />
-            <div>
-              <p className="text-stone-50">{selectedUser?.name || "Guest"}</p>
-              <p className="text-sm text-stone-400">Posting as the active viewer</p>
-            </div>
-          </div>
-          <div className="mt-6">
-            <p className="mb-3 text-sm text-stone-400">Your rating</p>
-            <StarRating value={rating} onChange={setRating} interactive label="Select rating" />
-          </div>
-          <textarea
-            value={comment}
-            onChange={(event) => setComment(event.target.value)}
-            placeholder="Write a brief reaction, what worked, what surprised you..."
-            className="mt-6 min-h-36 w-full rounded-[1.5rem] border border-white/10 bg-black/30 px-4 py-4 text-stone-100 placeholder:text-stone-500 focus:border-amber-300/40 focus:outline-none"
-          />
-          <button type="submit" className="mt-6 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-stone-950 transition hover:bg-amber-300">
-            Submit review
-          </button>
-        </form>
+      {/* Reviews Section */}
+      <div className="grid lg:grid-cols-5 gap-16">
+        <section className="lg:col-span-2 space-y-8">
+           <div className="space-y-2">
+             <div className="text-brand-violet font-bold tracking-widest uppercase text-[10px]">Interacción</div>
+             <h2 className="text-3xl font-bold text-white tracking-tight">Escribe tu Reseña</h2>
+           </div>
 
-        <div className="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.4)] backdrop-blur-xl">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Reviews</p>
-              <h2 className="mt-3 font-serif text-3xl text-stone-50">Audience reactions</h2>
-            </div>
+           <form onSubmit={handleSubmit} className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-3xl space-y-8">
+             <div className="flex items-center gap-4">
+               <img src={selectedUser?.avatar} className="w-12 h-12 rounded-xl object-cover border border-white/10" alt="" />
+               <div>
+                 <p className="text-white font-bold">{selectedUser?.name || "Invitado"}</p>
+                 <p className="text-[10px] text-white/30 uppercase tracking-widest">Perfil Activo</p>
+               </div>
+             </div>
+
+             <div className="space-y-4">
+               <p className="text-sm font-bold text-white/60">¿Cómo la calificarías?</p>
+               <div className="flex gap-2">
+                 {[1, 2, 3, 4, 5].map((s) => (
+                   <button
+                    key={s}
+                    type="button"
+                    onClick={() => setRating(s)}
+                    className={`h-12 w-12 rounded-xl border flex items-center justify-center transition-all ${
+                      rating >= s 
+                        ? "bg-amber-400/10 border-amber-400 text-amber-400" 
+                        : "bg-white/5 border-white/5 text-white/20"
+                    }`}
+                   >
+                     <Star size={20} fill={rating >= s ? "currentColor" : "none"} />
+                   </button>
+                 ))}
+               </div>
+             </div>
+
+             <div className="space-y-4">
+               <textarea
+                 value={comment}
+                 onChange={(e) => setComment(e.target.value)}
+                 placeholder="¿Qué te pareció esta película?"
+                 className="w-full min-h-[160px] p-6 rounded-2xl bg-black/40 border border-white/5 text-white placeholder:text-white/20 focus:border-brand-violet transition-colors resize-none"
+               />
+             </div>
+
+             <button type="submit" className="w-full py-5 rounded-2xl bg-brand-violet text-white font-black hover:bg-brand-violet/80 transition-all flex items-center justify-center gap-2">
+               <Send size={18} />
+               PUBLICAR RESEÑA
+             </button>
+           </form>
+        </section>
+
+        <section className="lg:col-span-3 space-y-8">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-bold text-white tracking-tight">Reacciones del Público</h2>
+            <span className="text-white/40 text-sm font-bold uppercase tracking-widest">{movieReviews.length} en total</span>
           </div>
-          <div className="mt-6 space-y-4">
+
+          <div className="grid gap-6">
             {movieReviews.length ? (
-              movieReviews.map((review) => (
-                <ReviewCard key={review.id} review={review} user={users.find((user) => user.id === review.userId)} movie={movie} />
-              ))
+               movieReviews.map((review) => (
+                 <ReviewCard 
+                   key={review.id} 
+                   review={review} 
+                   user={users.find((u) => u.id === review.userId)} 
+                   movie={movie} 
+                 />
+               ))
             ) : (
-              <p className="text-stone-400">Be the first to review this movie.</p>
+              <div className="py-20 text-center border border-dashed border-white/10 rounded-[2.5rem]">
+                <p className="text-white/20 font-bold uppercase tracking-widest">Sin reseñas aún</p>
+              </div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <section className="space-y-5">
-        <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-amber-300/70">Similar movies</p>
-          <h2 className="mt-3 font-serif text-4xl text-stone-50">Shared genre, same mood</h2>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Similar Movies */}
+      <section className="space-y-8 pb-12">
+        <h2 className="text-3xl font-bold text-white tracking-tight">Experiencias Similares</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
           {similar.map((item, index) => (
-            <MovieCard key={item.id} movie={item} index={index} />
+            <MovieCard key={item.id} movie={item} index={index} compact />
           ))}
         </div>
       </section>
