@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getPeliculas,
+  buscarPeliculas,
   crearPelicula,
   getPeliculaById,
   actualizarPelicula,
@@ -10,6 +11,7 @@ import {
 const router = express.Router();
 
 router.get("/", getPeliculas);
+router.get("/buscar", buscarPeliculas);  // MUST be before /:id
 router.post("/", crearPelicula);
 router.get("/:id", getPeliculaById);
 router.put("/:id", actualizarPelicula);

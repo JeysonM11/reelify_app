@@ -12,7 +12,7 @@ const fetchJson = async (url, options) => {
 };
 
 export const normalizeMovie = (movie, index = 0) => ({
-  id: movie._id || movie.id || `movie-${index}`,
+  id: String(movie._id || movie.id || `movie-${index}`),
   title: movie.title || movie.titulo || "Untitled movie",
   genre: movie.genre || movie.genero || [],
   year: movie.year || new Date(movie.createdAt || Date.now()).getFullYear(),
@@ -25,27 +25,38 @@ export const normalizeMovie = (movie, index = 0) => ({
       accentSeed: movie._id || movie.id || String(index),
     }),
   synopsis: movie.synopsis || movie.description || movie.descripcion || "No synopsis available.",
-  avgRating: Number(movie.avgRating || movie.promedio || 0),
-  totalReviews: Number(movie.totalReviews || movie.reviewsCount || 0),
+  avgRating: Number(movie.avgRating || movie.rating || movie.promedio || 0),
+  totalReviews: Number(movie.totalReviews || movie.reviewsCount || (movie.reviews_recientes && movie.reviews_recientes.length) || 0),
 });
 
-export const normalizeUser = (user, index = 0) => ({
-  id: user._id || user.id || `user-${index}`,
-  name: user.name || user.username || "Viewer",
-  avatar:
-    user.avatar ||
-    generateAvatarDataUri({
-      name: user.name || user.username || "Viewer",
-      accentSeed: user._id || user.id || String(index),
-    }),
-  joinedAt: user.joinedAt || user.createdAt || new Date().toISOString(),
-  favoriteGenres: user.favoriteGenres || user.generos_favoritos || [],
-});
+export const normalizeUser = (user, index = 0) => {
+  const firstName = user.nombre || user.name || user.username || "Viewer";
+  const lastName = user.apellido || "";
+  const fullName = lastName ? `${firstName} ${lastName}` : firstName;
+
+  return {
+    id: String(user._id || user.id || `user-${index}`),
+    name: fullName,
+    firstName: user.nombre || firstName,
+    lastName: user.apellido || lastName,
+    username: user.username || firstName,
+    email: user.email || "",
+    avatar:
+      user.avatar ||
+      generateAvatarDataUri({
+        name: firstName,
+        accentSeed: user._id || user.id || String(index),
+      }),
+    joinedAt: user.joinedAt || user.createdAt || new Date().toISOString(),
+    favoriteGenres: user.favoriteGenres || user.generos_favoritos || [],
+    bio: user.bio || user.biografia || "",
+  };
+};
 
 export const normalizeReview = (review, index = 0) => ({
-  id: review._id || review.id || `review-${index}`,
-  userId: review.userId || review.usuario?._id || review.usuario || null,
-  movieId: review.movieId || review.pelicula_id?._id || review.pelicula_id || null,
+  id: String(review._id || review.id || `review-${index}`),
+  userId: String(review.userId || review.usuario?._id || review.usuario || ""),
+  movieId: String(review.movieId || review.pelicula_id?._id || review.pelicula_id || ""),
   rating: Number(review.rating || review.puntaje || 0),
   comment: review.comment || review.comentario || "",
   createdAt: review.createdAt || review.updatedAt || new Date().toISOString(),
@@ -53,12 +64,28 @@ export const normalizeReview = (review, index = 0) => ({
   movie: review.pelicula_id ? normalizeMovie(review.pelicula_id, index) : null,
 });
 
-export const getPeliculas = async () => {
+export const getPeliculas = async (page = 1, limit = 20, genero = "", year = "") => {
   try {
-    const data = await fetchJson(`${API}/peliculas`);
-    return Array.isArray(data) ? data.map((movie, index) => normalizeMovie(movie, index)) : [];
+    let url = `${API}/peliculas?page=${page}&limit=${limit}`;
+    if (genero) url += `&genero=${encodeURIComponent(genero)}`;
+    if (year) url += `&year=${year}`;
+    
+    const data = await fetchJson(url);
+    const movieList = data.peliculas || data;
+    return Array.isArray(movieList) ? movieList.map((movie, index) => normalizeMovie(movie, index)) : [];
   } catch (error) {
     console.error("Error fetching películas:", error);
+    return [];
+  }
+};
+
+export const searchPeliculas = async (query) => {
+  try {
+    const data = await fetchJson(`${API}/peliculas/buscar?q=${encodeURIComponent(query)}`);
+    const movieList = data.peliculas || data;
+    return Array.isArray(movieList) ? movieList.map((movie, index) => normalizeMovie(movie, index)) : [];
+  } catch (error) {
+    console.error("Error searching movies:", error);
     return [];
   }
 };
@@ -168,12 +195,72 @@ export const getReviewsByPelicula = async (peliculaId) => {
   }
 };
 
-export const getReviews = async () => {
+export const login = async (email, password) => {
   try {
-    const data = await fetchJson(`${API}/reviews`);
-    return Array.isArray(data) ? data.map((review, index) => normalizeReview(review, index)) : [];
+    return await fetchJson(`${API}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+  } catch (error) {
+    console.error("Error logging in:", error);
+    throw error;
+  }
+};
+
+export const register = async (userData) => {
+  try {
+    return await fetchJson(`${API}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw error;
+  }
+};
+
+export const getReviews = async (userId = null) => {
+  try {
+    const url = userId ? `${API}/reviews?usuario=${userId}&limit=100` : `${API}/reviews`;
+    const data = await fetchJson(url);
+    // The backend returns an object with a 'reviews' array
+    const reviewList = data.reviews || data;
+    return Array.isArray(reviewList) ? reviewList.map((review, index) => normalizeReview(review, index)) : [];
   } catch (error) {
     console.error("Error fetching reviews:", error);
+    return [];
+  }
+};
+
+export const createReview = async (reviewData) => {
+  try {
+    // backend expects: { usuario, pelicula_id, puntaje, comentario }
+    const body = {
+      usuario: reviewData.userId,
+      pelicula_id: reviewData.movieId,
+      puntaje: reviewData.rating,
+      comentario: reviewData.comment
+    };
+    return await fetchJson(`${API}/reviews`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch (error) {
+    console.error("Error creating review:", error);
+    throw error;
+  }
+};
+
+export const getReviewsByMovie = async (movieId) => {
+  try {
+    const data = await fetchJson(`${API}/reviews/pelicula/${movieId}`);
+    const reviewList = data.reviews || [];
+    return Array.isArray(reviewList) ? reviewList.map((review, index) => normalizeReview(review, index)) : [];
+  } catch (error) {
+    console.error("Error fetching movie reviews:", error);
     return [];
   }
 };

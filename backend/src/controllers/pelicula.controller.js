@@ -2,7 +2,7 @@ import Pelicula from "../model/pelicula.model.js";
 
 export const getPeliculas = async (req, res) => {
   try {
-    const { page = 1, limit = 20, genero, year } = req.query;
+    const { page = 1, limit = 50, genero, year } = req.query;
     const skip = (page - 1) * limit;
 
     // Construir filtro dinámico
@@ -17,7 +17,7 @@ export const getPeliculas = async (req, res) => {
     const peliculas = await Pelicula.find(filtro)
       .skip(skip)
       .limit(parseInt(limit))
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1, _id: 1 });
 
     const total = await Pelicula.countDocuments(filtro);
 
@@ -28,6 +28,25 @@ export const getPeliculas = async (req, res) => {
       total_paginas: Math.ceil(total / limit),
       peliculas
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const buscarPeliculas = async (req, res) => {
+  try {
+    const { q = "" } = req.query;
+    if (!q.trim()) {
+      return res.json({ peliculas: [], total: 0 });
+    }
+
+    const peliculas = await Pelicula.find({
+      title: { $regex: q, $options: "i" }
+    })
+      .limit(30)
+      .sort({ rating: -1, _id: 1 });
+
+    res.json({ peliculas, total: peliculas.length });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

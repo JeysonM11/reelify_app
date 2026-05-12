@@ -1,64 +1,68 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Star, Play, Plus } from "lucide-react";
+import { Star, Play, Plus, Check } from "lucide-react";
+import { useApp } from "../../contexts/AppContext";
 
 export default function MovieCard({ movie, index = 0, compact = false }) {
+  const { toggleWatchlist, isInWatchlist } = useApp();
   if (!movie) return null;
+
+  const inWatchlist = isInWatchlist(movie.id);
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
-      className={`group relative flex flex-col gap-4 ${compact ? "w-44" : "w-full"}`}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      className={`group relative flex flex-col gap-2 ${compact ? "w-40" : "w-full"}`}
     >
       <Link
         to={`/movie/${movie.id}`}
-        className="relative aspect-[2/3] overflow-hidden rounded-2xl border border-white/5 bg-white/5 shadow-2xl transition-all duration-500 group-hover:border-white/20 group-hover:shadow-brand-violet/10 group-hover:scale-[1.02]"
+        className="relative aspect-[2/3] overflow-hidden rounded-md border border-[#eaeaea] bg-[#fcfcfc] transition-all duration-300 group-hover:border-[#ccc] shadow-sm"
         aria-label={`Ver detalles de ${movie.title}`}
       >
         <img 
           src={movie.poster} 
           alt={movie.title} 
-          className="h-full w-full object-cover transition duration-700 group-hover:scale-110 group-hover:brightness-50" 
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:opacity-90" 
         />
         
         {/* Overlay Actions */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 transition-all duration-500 group-hover:opacity-100">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-violet/90 text-white shadow-xl backdrop-blur-sm transition-transform duration-500 hover:scale-110">
-            <Play fill="white" size={24} className="ml-1" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-white/60 backdrop-blur-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#111] text-white shadow-md transition-transform hover:scale-105">
+            <Play fill="white" size={16} className="ml-1" />
           </div>
           <div className="flex gap-2">
-            <button title="Añadir a mi lista" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-md border border-white/10 hover:bg-white/20 transition-colors">
-              <Plus size={20} />
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWatchlist(movie.id);
+              }}
+              title={inWatchlist ? "Quitar de la lista" : "Añadir a la lista"} 
+              className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${
+                inWatchlist 
+                  ? "bg-[#111] text-white border-[#111]" 
+                  : "bg-white/80 text-[#111] border-[#ccc] hover:bg-white hover:border-[#111]"
+              }`}
+            >
+              {inWatchlist ? <Check size={14} /> : <Plus size={14} />}
             </button>
           </div>
         </div>
 
-        {/* Info Gradient Overlay */}
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 pt-20 translate-y-2 transition-transform duration-500 group-hover:translate-y-0">
-          <div className="flex items-center gap-2 mb-1">
-            <Star size={12} className="text-brand-violet fill-brand-violet" />
-            <span className="text-xs font-bold text-white">{movie.avgRating.toFixed(1)}</span>
-            <span className="text-[10px] text-white/40">/ 5</span>
-          </div>
-          <h3 className="font-semibold text-lg leading-tight text-white line-clamp-1">{movie.title}</h3>
-          <p className="mt-1 text-xs text-white/60 uppercase tracking-wider">{movie.year} • {movie.genre[0]}</p>
-        </div>
       </Link>
 
-      {!compact && (
-        <div className="flex items-center justify-between gap-3 px-1">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-white/90 group-hover:text-white transition-colors">{movie.title}</p>
-            <p className="truncate text-[11px] text-white/40 uppercase tracking-tight">{movie.director}</p>
-          </div>
-          <div className="flex items-center gap-1.5 rounded-lg bg-white/5 px-2 py-1 border border-white/5">
-             <Star size={10} className="text-brand-violet fill-brand-violet" />
-             <span className="text-[10px] font-bold text-white/80">{movie.avgRating.toFixed(1)}</span>
-          </div>
+      <div className="flex items-start justify-between gap-2 px-1 mt-1">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-medium text-[#111] group-hover:text-[#666] transition-colors leading-tight">{movie.title}</p>
+          <p className="truncate text-[11px] text-[#888] mt-0.5">{movie.year} {movie.genre[0] ? `• ${movie.genre[0]}` : ''}</p>
         </div>
-      )}
+        <div className="flex items-center gap-1 bg-white px-1.5 py-0.5 rounded text-[10px] font-medium border border-[#eaeaea]">
+           <Star size={10} className="text-[#aaa] fill-[#aaa]" />
+           <span className="text-[#333]">{movie.avgRating.toFixed(1)}</span>
+        </div>
+      </div>
     </motion.article>
   );
 }

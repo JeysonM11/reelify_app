@@ -1,17 +1,10 @@
 const buildSvgDataUri = (svg) => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 
 export const genres = [
-  "Action",
-  "Adventure",
-  "Animation",
-  "Crime",
-  "Drama",
-  "Fantasy",
-  "Horror",
-  "Mystery",
-  "Romance",
-  "Sci-Fi",
-  "Thriller",
+  "Acción", "Comedia", "Drama", "Terror", "Ciencia ficción", 
+  "Aventura", "Fantasía", "Romance", "Thriller", "Animación",
+  "Documental", "Misterio", "Musical", "Western", "Guerra", 
+  "Crimen", "Historia", "Familia", "Biografía"
 ];
 
 const makePoster = ({ title, symbol, accent, secondary, third }) =>

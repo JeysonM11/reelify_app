@@ -21,16 +21,10 @@ export const formatDate = (value, locale = "es-ES") => {
 };
 
 export const buildMovieMetrics = (movies, reviews) => {
-  return movies.map((movie) => {
-    const movieReviews = reviews.filter((review) => review.movieId === movie.id);
-    const avgRating = average(movieReviews.map((review) => review.rating));
-
-    return {
-      ...movie,
-      avgRating: roundToTenth(avgRating),
-      totalReviews: movieReviews.length,
-    };
-  });
+  // We no longer compute global averages from local reviews 
+  // because we only load the active user's reviews to save bandwidth.
+  // The backend provides the correct global avgRating and totalReviews.
+  return movies;
 };
 
 export const getTopMovies = (movies, limit = 20) => {
@@ -39,17 +33,21 @@ export const getTopMovies = (movies, limit = 20) => {
     .slice(0, limit);
 };
 
-export const getGenreAverageData = (movies, reviews) => {
+export const getGenreAverageData = (movies) => {
   const allGenres = [...new Set(movies.flatMap((movie) => movie.genre))];
 
   return allGenres
     .map((genre) => {
-      const genreRatings = reviews.filter((review) => movies.find((movie) => movie.id === review.movieId && movie.genre.includes(genre))).map((review) => review.rating);
+      const genreMovies = movies.filter((movie) => movie.genre.includes(genre) && movie.avgRating > 0);
+      const avgRating = genreMovies.length > 0 
+        ? average(genreMovies.map((m) => m.avgRating)) 
+        : 0;
+      const totalReviews = genreMovies.reduce((sum, m) => sum + (m.totalReviews || 0), 0);
 
       return {
         genre,
-        avgRating: roundToTenth(average(genreRatings)),
-        totalReviews: genreRatings.length,
+        avgRating: roundToTenth(avgRating),
+        totalReviews,
       };
     })
     .sort((left, right) => right.avgRating - left.avgRating || right.totalReviews - left.totalReviews);
@@ -93,13 +91,18 @@ export const getUserStats = (userId, reviews, movies) => {
   };
 };
 
-export const getRecommendationsForUser = (userId, movies, reviews) => {
+export const getRecommendationsForUser = (userId, movies, reviews, favoriteGenres = []) => {
   const ratedMovieIds = new Set(getUserReviews(userId, reviews).map((review) => review.movieId));
-  const topGenres = getUserTopGenres(userId, reviews, movies).slice(0, 2).map((entry) => entry.genre);
+  const userTopGenres = getUserTopGenres(userId, reviews, movies).slice(0, 2).map((entry) => entry.genre);
+  
+  // Combine top genres from ratings with favorite genres from registration
+  const targetGenres = [...new Set([...userTopGenres, ...favoriteGenres])];
 
-  return movies
-    .filter((movie) => !ratedMovieIds.has(movie.id) && movie.genre.some((genre) => topGenres.includes(genre)))
+  const recommended = movies
+    .filter((movie) => !ratedMovieIds.has(movie.id) && (targetGenres.length === 0 || movie.genre.some((genre) => targetGenres.includes(genre))))
     .sort((left, right) => right.avgRating - left.avgRating || right.totalReviews - left.totalReviews || left.title.localeCompare(right.title));
+
+  return recommended;
 };
 
 export const getSimilarMovies = (movieId, movies, limit = 6) => {
@@ -116,27 +119,9 @@ export const getFeaturedMovie = (movies) => {
   return [...movies].sort((left, right) => right.avgRating - left.avgRating || right.totalReviews - left.totalReviews)[0] || null;
 };
 
-export const getMostReviewedMovieThisMonth = (movies, reviews) => {
-  const since = new Date();
-  since.setDate(since.getDate() - 30);
-  const counts = new Map();
-
-  reviews.forEach((review) => {
-    if (new Date(review.createdAt) < since) return;
-    counts.set(review.movieId, (counts.get(review.movieId) || 0) + 1);
-  });
-
-  let bestId = null;
-  let bestCount = 0;
-
-  counts.forEach((count, movieId) => {
-    if (count > bestCount) {
-      bestId = movieId;
-      bestCount = count;
-    }
-  });
-
-  if (!bestId) return null;
-
-  return { movie: movies.find((movie) => movie.id === bestId) || null, reviewCount: bestCount };
+export const getMostReviewedMovieThisMonth = (movies) => {
+  if (!movies.length) return null;
+  // Pick the movie with the most reviews
+  const sorted = [...movies].sort((a, b) => (b.totalReviews || 0) - (a.totalReviews || 0));
+  return sorted[0] || null;
 };

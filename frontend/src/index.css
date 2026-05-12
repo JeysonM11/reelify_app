@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 :root {
-  --bg-main: #020202;
-  --bg-card: rgba(15, 15, 15, 0.7);
-  --accent-primary: #8b5cf6;
-  --accent-secondary: #06b6d4;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-reflection: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  --bg-main: #fcfcfc;
+  --bg-card: #ffffff;
+  --accent-primary: #000000;
+  --accent-secondary: #666666;
+  --text-main: #111111;
+  --text-muted: #555555;
+  --border-subtle: #e5e5e5;
+  --border-focus: #cccccc;
 }
 
 @theme {
-  --color-brand-violet: #8b5cf6;
-  --color-brand-cyan: #06b6d4;
-  --font-sans: 'Outfit', 'Inter', system-ui, sans-serif;
+  --color-brand-violet: #6d28d9;
+  --color-brand-cyan: #0891b2;
+  --font-sans: 'Inter', 'Geist', system-ui, -apple-system, sans-serif;
 }
 
 body {
@@ -23,53 +23,69 @@ body {
   font-family: var(--font-sans);
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Minimalist */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-main);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 10px;
+  background: #ccc;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #aaa;
 }
 
-/* Glassmorphism Utility */
+/* Base Utilities */
 .glass {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
 }
 
 .glass-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease-in-out;
 }
 
 .glass-hover:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.03);
+  border-color: var(--border-focus);
+}
+
+.card-premium {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card-premium:hover {
+  border-color: #ddd;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
 }
 
-/* Animations */
-@keyframes aurora {
-  0% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0, 0) scale(1); }
+/* Form inputs styling */
+input[type="text"], input[type="password"], input[type="email"], select, textarea {
+  background-color: #fff;
+  border: 1px solid #e5e5e5;
+  color: #111;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.animate-aurora {
-  animation: aurora 20s infinite alternate linear;
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+  border-color: #000;
+  box-shadow: 0 0 0 1px #000;
+  outline: none;
 }

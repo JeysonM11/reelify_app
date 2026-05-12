@@ -11,80 +11,75 @@ export default function RecomendacionesPage() {
   return (
     <div className="space-y-16 animate-in fade-in duration-700">
       {/* AI Discovery Header */}
-      <section className="relative overflow-hidden rounded-[3rem] border border-white/10 bg-black/40 p-8 md:p-16 backdrop-blur-3xl group">
-        <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 bg-brand-cyan/20 blur-[120px] rounded-full group-hover:bg-brand-cyan/30 transition-colors duration-1000" />
-        <div className="absolute bottom-0 left-0 -ml-32 -mb-32 w-96 h-96 bg-brand-violet/20 blur-[120px] rounded-full group-hover:bg-brand-violet/30 transition-colors duration-1000" />
-        
-        <div className="relative flex flex-col items-center text-center max-w-3xl mx-auto space-y-8">
+      <section className="relative overflow-hidden rounded-xl border border-[#eaeaea] bg-white p-8 md:p-12 shadow-sm">
+        <div className="relative flex flex-col items-center text-center max-w-2xl mx-auto space-y-6">
           <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="flex items-center gap-3 px-6 py-2 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan text-xs font-bold uppercase tracking-widest"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-md bg-[#fafafa] border border-[#eaeaea] text-[#111] text-xs font-medium"
           >
-            <BrainCircuit size={16} />
+            <BrainCircuit size={14} />
             Descubrimiento con IA
           </motion.div>
           
-          <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter leading-none">
-            Ajustado a <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-violet to-brand-cyan">Tu Gusto</span>
+          <h1 className="text-3xl md:text-5xl font-semibold text-[#111] tracking-tight leading-tight">
+            Ajustado a <span className="text-[#666]">Tu Gusto</span>
           </h1>
           
-          <p className="text-white/40 text-lg md:text-xl leading-relaxed">
+          <p className="text-[#555] text-sm md:text-base leading-relaxed">
             Nuestro motor de recomendaciones analiza tus {userStats.moviesRated} calificaciones y {focusGenres.length} géneros favoritos para encontrar tu próxima obsesión cinematográfica.
           </p>
 
           <div className="flex flex-wrap justify-center gap-2">
             {focusGenres.map((genre) => (
-              <span key={genre} className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-white/60">
+              <span key={genre} className="px-3 py-1.5 rounded-md bg-[#fafafa] border border-[#eaeaea] text-xs font-medium text-[#333]">
                 {genre}
               </span>
             ))}
           </div>
 
-          <div className="flex items-center gap-8 pt-6 border-t border-white/5 w-full justify-center">
+          <div className="flex items-center gap-8 pt-6 border-t border-[#eaeaea] w-full justify-center">
             <div className="text-center">
-              <p className="text-2xl font-black text-white">{userStats.moviesRated}</p>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Datos</p>
+              <p className="text-xl font-semibold text-[#111]">{userStats.moviesRated}</p>
+              <p className="text-[10px] text-[#666] font-medium uppercase mt-1">Datos</p>
             </div>
-            <div className="w-px h-10 bg-white/5" />
+            <div className="w-px h-8 bg-[#eaeaea]" />
             <div className="text-center">
-              <p className="text-2xl font-black text-white">{userStats.averageRatingGiven.toFixed(1)}</p>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Calidad Promedio</p>
+              <p className="text-xl font-semibold text-[#111]">{userStats.averageRatingGiven.toFixed(1)}</p>
+              <p className="text-[10px] text-[#666] font-medium uppercase mt-1">Calidad Promedio</p>
             </div>
-             <div className="w-px h-10 bg-white/5" />
+             <div className="w-px h-8 bg-[#eaeaea]" />
             <div className="text-center">
-              <p className="text-2xl font-black text-white">98%</p>
-              <p className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Precisión</p>
+              <p className="text-xl font-semibold text-[#111]">98%</p>
+              <p className="text-[10px] text-[#666] font-medium uppercase mt-1">Precisión</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Results Grid */}
-      <section className="space-y-8 pb-12">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-             <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-brand-cyan">
-              <Zap size={20} />
-            </div>
-            <h2 className="text-3xl font-bold text-white tracking-tight">Top Predicciones</h2>
+      <section className="space-y-6 pb-12">
+        <div className="flex items-center justify-between border-b border-[#eaeaea] pb-4">
+          <div className="flex items-center gap-2 text-[#111]">
+            <Zap size={18} className="text-[#666]" />
+            <h2 className="text-xl font-medium tracking-tight">Top Predicciones</h2>
           </div>
           
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-xs font-bold text-white/40 hover:text-white transition-colors">
-            <Filter size={14} />
+          <button className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white border border-[#eaeaea] text-xs font-medium text-[#666] hover:text-[#111] hover:border-[#ccc] transition-colors">
+            <Filter size={12} />
             Refinar Búsqueda
           </button>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-6 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-6 gap-4 md:gap-6">
           {recommendations.length ? (
             recommendations.slice(0, 18).map((movie, index) => (
               <MovieCard key={movie.id} movie={movie} index={index} />
             ))
           ) : (
-            <div className="col-span-full py-20 text-center space-y-4">
-              <Sparkles className="mx-auto text-white/10" size={64} />
-              <p className="text-white/40 text-lg">Califica más películas para desbloquear predicciones personalizadas.</p>
+            <div className="col-span-full py-16 text-center space-y-3 rounded-xl border border-dashed border-[#ccc] bg-[#fafafa]">
+              <Sparkles className="mx-auto text-[#aaa]" size={32} />
+              <p className="text-[#666] text-sm">Califica más películas para desbloquear predicciones personalizadas.</p>
             </div>
           )}
         </div>

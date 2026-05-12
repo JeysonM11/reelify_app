@@ -9,36 +9,42 @@ export default function ReviewCard({ review, user, movie }) {
   if (!review) return null;
 
   const userData = user || getUserById(review.userId) || { name: "Viewer", avatar: "" };
+  const userData = user || getUserById(review.userId) || { name: "Usuario", avatar: "" };
   const movieData = movie || getMovieById(review.movieId) || null;
 
   return (
     <motion.article 
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className="relative flex gap-5 p-6 rounded-3xl bg-white/[0.03] border border-white/5 backdrop-blur-sm group hover:bg-white/[0.06] transition-all duration-300"
     >
-      <div className="relative shrink-0">
-        <img src={userData.avatar} alt={userData.name} className="h-12 w-12 rounded-2xl object-cover border border-white/10" />
-        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-brand-violet rounded-full flex items-center justify-center text-white border-2 border-black">
-          <MessageSquare size={10} fill="currentColor" />
-        </div>
-      </div>
-
-      <div className="flex-1 space-y-3 min-w-0">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h4 className="text-white font-bold truncate group-hover:text-brand-cyan transition-colors">{userData.name}</h4>
-            <p className="text-[10px] text-white/40 uppercase tracking-wider font-medium">
-              {movieData?.title ? <span className="text-brand-violet">{movieData.title}</span> : "Reseña"} • {formatDate(review.createdAt)}
-            </p>
+      <div className={`p-4 rounded-xl border border-[#eaeaea] bg-[#fcfcfc] transition-all hover:bg-white hover:border-[#ccc] ${className}`}>
+        <div className="flex items-start justify-between gap-4 mb-3">
+          <div className="flex items-center gap-3">
+            <img 
+              src={userData.avatar || `https://ui-avatars.com/api/?name=${userData.name || 'Usuario'}&background=random`} 
+              alt={userData.name} 
+              className="w-10 h-10 rounded-full object-cover border border-[#eaeaea]"
+            />
+            <div>
+              <p className="text-sm font-medium text-[#111]">{userData.name || "Usuario Anónimo"}</p>
+              {movieData && (
+                <Link to={`/movie/${movieData.id}`} className="text-xs text-[#666] hover:text-[#111] transition-colors">
+                  sobre <span className="font-medium text-[#333]">{movieData.title}</span>
+                </Link>
+              )}
+              {!movieData && (
+                <p className="text-[10px] text-[#888]">{new Date(review.createdAt).toLocaleDateString()}</p>
+              )}
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5 border border-white/5">
-            <Star size={12} className="text-amber-400 fill-amber-400" />
-            <span className="text-xs font-black text-white">{review.rating}</span>
+          <div className="flex items-center gap-1 bg-white px-2 py-1 rounded border border-[#eaeaea]">
+            <Star size={12} className="text-[#aaa] fill-[#aaa]" />
+            <span className="text-xs font-semibold text-[#111]">{review.rating}</span>
           </div>
         </div>
-        
-        <p className="text-sm text-white/70 leading-relaxed italic">"{review.comment}"</p>
+        <p className="text-sm text-[#555] leading-relaxed line-clamp-3">
+          {review.comment}
+        </p>
       </div>
     </motion.article>
   );

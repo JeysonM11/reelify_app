@@ -9,7 +9,12 @@ import Review from "./model/review.model.js";
 
 dotenv.config();
 
-const generos = ["Acción", "Comedia", "Drama", "Terror", "Ciencia ficción", "Aventura", "Fantasía", "Romance", "Thriller", "Animación"];
+const generos = [
+  "Acción", "Comedia", "Drama", "Terror", "Ciencia ficción",
+  "Aventura", "Fantasía", "Romance", "Thriller", "Animación",
+  "Documental", "Misterio", "Musical", "Western", "Guerra",
+  "Crimen", "Historia", "Familia", "Biografía"
+];
 
 const nombresPeliculas = [
   "Inception", "Interstellar", "The Dark Knight", "Pulp Fiction", "Forrest Gump",
@@ -58,16 +63,19 @@ const comentarios = [
   "Defintivamente una película que debe ver"
 ];
 
-const nombres = ["Juan", "María", "Carlos", "Ana", "Miguel", "Laura", "Diego", "Sofia", "Lucas", "Isabella",
-                 "Fernando", "Valentina", "Jorge", "Camila", "Roberto", "Paula", "Antonio", "Carmen", "Manuel", "Rosa"];
+const nombres = ["Juan", "Maria", "Carlos", "Ana", "Miguel", "Laura", "Diego", "Sofia", "Lucas", "Isabella",
+  "Fernando", "Valentina", "Jorge", "Camila", "Roberto", "Paula", "Antonio", "Carmen", "Manuel", "Rosa"];
 
-const apellidos = ["García", "Rodríguez", "Martínez", "Hernández", "López", "González", "Pérez", "Sánchez", "Ramírez", "Torres",
-                   "Rivera", "Gómez", "Díaz", "Ortiz", "Jiménez", "Moreno", "Ramos", "Flores", "Medina", "Vargas"];
+const apellidos = ["Garcia", "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Perez", "Sanchez", "Ramirez", "Torres",
+  "Rivera", "Gomez", "Diaz", "Ortiz", "Jimenez", "Moreno", "Ramos", "Flores", "Medina", "Vargas"];
 
 const generarUsername = (nombres, apellidos, index) => {
   const nombre = nombres[index % nombres.length];
   const apellido = apellidos[Math.floor(index / nombres.length) % apellidos.length];
-  return `${nombre.toLowerCase()}_${apellido.toLowerCase()}_${index + 1}`;
+  // Normalizar: quitar tildes y caracteres especiales
+  const cleanNombre = nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const cleanApellido = apellido.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return `${cleanNombre}_${cleanApellido}_${index + 1}`;
 };
 
 const generarNombreCompleto = (index) => ({
@@ -89,7 +97,7 @@ const crearDatos = async () => {
     // crear 1000+ usuarios
     console.log("Creando 1200 usuarios...");
     const usuarios = [];
-    const passwordHash = await bcrypt.hash("password123", 10);
+    const passwordHash = await bcrypt.hash("admin123", 10);
 
     for (let i = 0; i < 1200; i++) {
       const username = generarUsername(nombres, apellidos, i);
@@ -126,7 +134,7 @@ const crearDatos = async () => {
         ),
         year: 1980 + Math.floor(Math.random() * 44),
         director: `Director ${Math.floor(Math.random() * 500)}`,
-        rating: (Math.random() * 10).toFixed(1)
+        rating: (Math.random() * 4 + 1).toFixed(1)
       });
     }
 
@@ -155,9 +163,9 @@ const crearDatos = async () => {
         pelicula_id: pelicula._id,
         puntaje: Math.floor(Math.random() * 5) + 1,
         comentario: comentarios[Math.floor(Math.random() * comentarios.length)],
-        fecha_review: new Date(2020 + Math.floor(Math.random() * 6), 
-                               Math.floor(Math.random() * 12), 
-                               Math.floor(Math.random() * 28))
+        fecha_review: new Date(2020 + Math.floor(Math.random() * 6),
+          Math.floor(Math.random() * 12),
+          Math.floor(Math.random() * 28))
       });
     }
 
@@ -169,14 +177,45 @@ const crearDatos = async () => {
     }
 
     console.log(`✓ ${reviews.length} reviews creados`);
-    console.log("\n✅ Datos insertados correctamente 🚀");
+
+    // Sincronizar películas con sus reviews (rating y reviews_recientes)
+    console.log("Sincronizando películas con sus reviews (procesando en lotes)...");
+    const peliculasParaActualizar = await Pelicula.find();
+    const batchSize = 100;
+    
+    for (let i = 0; i < peliculasParaActualizar.length; i += batchSize) {
+      const currentBatch = peliculasParaActualizar.slice(i, i + batchSize);
+      
+      await Promise.all(currentBatch.map(async (pelicula) => {
+        const reviewsDePelicula = await Review.find({ pelicula_id: pelicula._id })
+          .sort({ fecha_review: -1 })
+          .limit(20);
+        
+        if (reviewsDePelicula.length > 0) {
+          const promedio = reviewsDePelicula.reduce((acc, rev) => acc + rev.puntaje, 0) / reviewsDePelicula.length;
+          
+          pelicula.rating = Number(promedio.toFixed(1));
+          pelicula.reviews_recientes = reviewsDePelicula.map(rev => ({
+            usuario_id: rev.usuario,
+            puntaje: rev.puntaje,
+            comentario: rev.comentario,
+            fecha: rev.fecha_review
+          }));
+          
+          await pelicula.save();
+        }
+      }));
+      console.log(`  Progreso: ${Math.min(i + batchSize, peliculasParaActualizar.length)} / ${peliculasParaActualizar.length} películas`);
+    }
+
+    console.log("\n Datos insertados y sincronizados correctamente");
     console.log(`Total usuarios: ${usuariosDB.length}`);
     console.log(`Total películas: ${peliculasDB.length}`);
     console.log(`Total reviews: ${reviews.length}`);
-    
+
     process.exit();
   } catch (error) {
-    console.error("❌ Error:", error);
+    console.error("Error:", error);
     process.exit(1);
   }
 };

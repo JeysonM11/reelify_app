@@ -1,18 +1,21 @@
 import Review from "../model/review.model.js";
+import Pelicula from "../model/pelicula.model.js";
 
 export const getReviews = async (req, res) => {
   try {
-    const { page = 1, limit = 20 } = req.query;
+    const { page = 1, limit = 20, usuario } = req.query;
     const skip = (page - 1) * limit;
 
-    const reviews = await Review.find()
+    const query = usuario ? { usuario } : {};
+
+    const reviews = await Review.find(query)
       .populate("usuario", "username email generos_favoritos")
       .populate("pelicula_id", "title description genero year director")
       .skip(skip)
       .limit(parseInt(limit))
-      .sort({ fecha_review: -1 });
+      .sort({ fecha_review: -1, _id: 1 });
 
-    const total = await Review.countDocuments();
+    const total = await Review.countDocuments(query);
 
     res.json({
       total,
@@ -64,6 +67,27 @@ export const crearReview = async (req, res) => {
     await review.populate("usuario", "username email");
     await review.populate("pelicula_id", "title");
 
+    // Actualizar la película con la nueva review y recalcular rating
+    const peliculaId = pelicula_id;
+    const allReviews = await Review.find({ pelicula_id: peliculaId });
+    const nuevoPromedio = allReviews.reduce((acc, rev) => acc + rev.puntaje, 0) / allReviews.length;
+
+    await Pelicula.findByIdAndUpdate(peliculaId, {
+      $set: { rating: Number(nuevoPromedio.toFixed(1)) },
+      $push: { 
+        reviews_recientes: {
+          $each: [{
+            usuario_id: usuario,
+            puntaje,
+            comentario,
+            fecha: new Date()
+          }],
+          $position: 0,
+          $slice: 20 // Mantener solo las 20 más recientes
+        }
+      }
+    });
+
     res.status(201).json({
       mensaje: "Review creada exitosamente",
       review
@@ -79,15 +103,9 @@ export const getReviewsByPelicula = async (req, res) => {
     const { limit = 20 } = req.query;
 
     const reviews = await Review.find({ pelicula_id: peliculaId })
-      .populate("usuario", "username email")
+      .populate("usuario", "username email nombre apellido")
       .limit(parseInt(limit))
       .sort({ fecha_review: -1 });
-
-    if (reviews.length === 0) {
-      return res.status(404).json({ 
-        error: "No hay reviews para esta película" 
-      });
-    }
 
     res.json({
       peliculaId,

@@ -6,7 +6,7 @@ const peliculaSchema = new mongoose.Schema({
     genero: [{ type: String, required: true, index: true }],
     year: { type: Number, required: true, index: true },
     director: { type: String, index: true },
-    rating: { type: Number, min: 0, max: 10 },
+    rating: { type: Number, min: 1, max: 5 },
     // Embedding: últimas 20 reviews resumidas
     reviews_recientes: [{
         usuario_id: mongoose.Schema.Types.ObjectId,

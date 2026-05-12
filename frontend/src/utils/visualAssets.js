@@ -79,10 +79,18 @@ export const generateAvatarDataUri = ({ name, accentSeed = "" }) => {
           <stop offset="100%" stop-color="${secondary}"/>
         </linearGradient>
       </defs>
-      <rect width="120" height="120" rx="36" fill="url(#avatarBg)"/>
-      <circle cx="60" cy="50" r="22" fill="rgba(255,255,255,0.88)"/>
-      <path d="M28 104c6-20 20-30 32-30s26 10 32 30" fill="rgba(255,255,255,0.88)"/>
-      <text x="60" y="79" text-anchor="middle" fill="#0E0E0E" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">${escapeXml(initials)}</text>
+      <rect width="120" height="120" rx="32" fill="url(#avatarBg)"/>
+      <text 
+        x="60" 
+        y="65" 
+        text-anchor="middle" 
+        dominant-baseline="middle" 
+        fill="white" 
+        font-family="Arial, Helvetica, sans-serif" 
+        font-size="48" 
+        font-weight="900"
+        style="text-shadow: 0 4px 12px rgba(0,0,0,0.2)"
+      >${escapeXml(initials)}</text>
     </svg>
   `);
 };
