@@ -1,15 +1,17 @@
 import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
-    usuario: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true },
-    pelicula_id: { type: mongoose.Schema.Types.ObjectId, ref: "Pelicula", required: true },
-    puntaje: { type: Number, min: 1, max: 5 },
-    comentario: { type: String },
+    usuario: { type: mongoose.Schema.Types.ObjectId, ref: "Usuario", required: true, index: true },
+    pelicula_id: { type: mongoose.Schema.Types.ObjectId, ref: "Pelicula", required: true, index: true },
+    puntaje: { type: Number, min: 1, max: 5, required: true, index: true },
+    comentario: { type: String, maxlength: 500 },
+    fecha_review: { type: Date, default: Date.now, index: true }
 }, { timestamps: true });
 
-// índices para mejorar consultas por película y por usuario
-reviewSchema.index({ pelicula_id: 1 });
-reviewSchema.index({ usuario_id: 1 });
+// Índices compuestos para optimizar consultas frecuentes
+reviewSchema.index({ pelicula_id: 1, puntaje: -1 }); 
+reviewSchema.index({ usuario: 1, fecha_review: -1 });
+reviewSchema.index({ usuario: 1, pelicula_id: 1 }, { unique: true }); // Un review por película y usuario
 
 const Review = mongoose.model("Review", reviewSchema);
 export default Review;

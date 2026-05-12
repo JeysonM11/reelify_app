@@ -5,6 +5,7 @@ import { connectDB } from "./config/db.js";
 import peliculaRoutes from "./routes/pelicula.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import usuarioRoutes from "./routes/usuario.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import statsRoutes from "./routes/stats.routes.js";
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/peliculas", peliculaRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/stats", statsRoutes);
 
 // ruta de prueba
@@ -30,7 +32,7 @@ app.get("/api/health", (req, res) => {
 });
 
 // puerto
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const startServer = async () => {
   await connectDB();
