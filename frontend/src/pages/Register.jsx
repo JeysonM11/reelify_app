@@ -13,6 +13,7 @@ export default function Register() {
     email: "",
     password: "",
     avatar: "",
+    confirmPassword: "",
     generos_favoritos: []
   });
   const [error, setError] = useState("");
@@ -114,6 +115,19 @@ export default function Register() {
                   className="w-full rounded-md border border-[#eaeaea] bg-[#fcfcfc] py-2 px-3 text-sm text-[#111] placeholder:text-[#888] outline-none focus:border-[#ccc]"
                 />
               </div>
+
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-xs font-medium text-[#111]">Nombre de usuario</label>
+                  <input
+                    name="username"
+                    type="text"
+                    value={formData.username}
+                    onChange={handleChange}
+                    placeholder="usuario123"
+                    required
+                    className="w-full rounded-md border border-[#eaeaea] bg-[#fcfcfc] py-2 px-3 text-sm text-[#111] placeholder:text-[#888] outline-none focus:border-[#ccc]"
+                  />
+                </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-medium text-[#111]">Contraseña</label>

@@ -1,14 +1,14 @@
 import { Star, MessageSquare } from "lucide-react";
+import { Link } from "react-router-dom";
 import { formatDate } from "../../utils/movieStats";
 import { useApp } from "../../contexts/AppContext";
 import { motion } from "framer-motion";
 
-export default function ReviewCard({ review, user, movie }) {
+export default function ReviewCard({ review, user, movie, className = "" }) {
   const { getUserById, getMovieById } = useApp();
 
   if (!review) return null;
 
-  const userData = user || getUserById(review.userId) || { name: "Viewer", avatar: "" };
   const userData = user || getUserById(review.userId) || { name: "Usuario", avatar: "" };
   const movieData = movie || getMovieById(review.movieId) || null;
 
